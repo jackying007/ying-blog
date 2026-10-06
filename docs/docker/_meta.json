@@ -1,0 +1,18 @@
+[
+  "base",
+  {
+    "type": "dir",
+    "name": "download",
+    "label": "下载"
+  },
+  {
+    "type": "dir",
+    "name": "command",
+    "label": "命令"
+  },
+  {
+    "type": "dir",
+    "name": "images",
+    "label": "常用镜像"
+  }
+]

@@ -1,0 +1,286 @@
+---
+pageType: doc
+sidebar: false
+tags: [js, 前端]
+date: 2021-11-15
+---
+
+# 数组转树形结构，获取树结构数据信息
+
+js 实现数组转树形结构的各种函数，实现通过原数组获取树结构数据信息。
+
+## 输入输出的效果
+
+```js
+let arr = [
+  { id: 1, parentId: 0, name: '广东省' },
+  { id: 2, parentId: 1, name: '广州市' },
+  { id: 3, parentId: 1, name: '深圳市' },
+  { id: 4, parentId: 2, name: '荔湾区' },
+  { id: 5, parentId: 2, name: '越秀区' },
+  { id: 6, parentId: 3, name: '南山区' },
+  { id: 7, parentId: 3, name: '宝安区' }
+]
+
+const { toTreeV1, toTreeV2, toTreeHasLayer, getTreeInfoById } =
+  createTreeFns(arr)
+
+// let treeData = toTreeV1(0)
+// let treeData = toTreeV2(0)
+let treeData = toTreeHasLayer(0)
+console.log(JSON.stringify(treeData, null, 2))
+
+console.log(getTreeInfoById(4, 'name'))
+```
+
+```bash
+{
+  "arr": [
+    {
+      "id": 1,
+      "parentId": 0,
+      "name": "广东省",
+      "layer": 1,
+      "children": [
+        {
+          "id": 2,
+          "parentId": 1,
+          "name": "广州市",
+          "layer": 2,
+          "children": [
+            {
+              "id": 4,
+              "parentId": 2,
+              "name": "荔湾区",
+              "layer": 3,
+              "children": []
+            },
+            {
+              "id": 5,
+              "parentId": 2,
+              "name": "越秀区",
+              "layer": 3,
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "parentId": 1,
+          "name": "深圳市",
+          "layer": 2,
+          "children": [
+            {
+              "id": 6,
+              "parentId": 3,
+              "name": "南山区",
+              "layer": 3,
+              "children": []
+            },
+            {
+              "id": 7,
+              "parentId": 3,
+              "name": "宝安区",
+              "layer": 3,
+              "children": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "layerNum": 3
+}
+[ '广东省', '广州市', '荔湾区' ]
+```
+
+## 实现
+
+先创建一个高阶函数，到时候返回各种操作方法，高阶函数接收数组和数组元素里 id 的字段和 parentId 的字段。
+
+```js
+function createTreeFns(array = [], idField = 'id', parentIdFiled = 'parentId') {
+  return {}
+}
+```
+
+### 数组转树结构 v1
+
+实现一个 toTreeV1 函数，这个实现比较好理解
+
+```js
+function createTreeFns(array = [], idField = 'id', parentIdFiled = 'parentId') {
+  function toTreeV1(parentId) {
+    const res = []
+    array.forEach(el => {
+      if (el[parentIdFiled] === parentId) {
+        el.children = toTreeV1(el[idField])
+        res.push(el)
+      }
+    })
+    return res
+  }
+
+  return {
+    toTreeV1
+  }
+}
+```
+
+### 数组转树结构 v2
+
+实现一个 toTreeV2 函数，这个实现代码较少
+
+```js
+function createTreeFns(array = [], idField = 'id', parentIdFiled = 'parentId') {
+  function toTreeV2(parentId) {
+    return array
+      .filter(el => el[parentIdFiled] === parentId)
+      .map(el => ({ ...el, children: toTreeV2(el[idField]) }))
+  }
+
+  return {
+    toTreeV2
+  }
+}
+```
+
+### 顺便获取树结构层数
+
+顺便获取树结构层数
+
+```js
+function createTreeFns(array = [], idField = 'id', parentIdFiled = 'parentId') {
+  function toTreeHasLayer(parentId) {
+    let layerNum = 0
+    function arrayToTree(parentId, layer) {
+      const res = []
+      array.forEach(el => {
+        if (el[parentIdFiled] === parentId) {
+          el.layer = layer
+          el.children = arrayToTree(el[idField], layer + 1)
+          if (el.children.length) {
+            layerNum++
+          }
+          res.push(el)
+        }
+      })
+      return res
+    }
+    return {
+      arr: arrayToTree(parentId, 1),
+      layerNum
+    }
+  }
+
+  return {
+    toTreeHasLayer
+  }
+}
+```
+
+### 根据 id 获取整个树页的信息
+
+```js
+function createTreeFns(array = [], idField = 'id', parentIdFiled = 'parentId') {
+  function getTreeInfoById(id, infoField) {
+    let res = []
+    let data = array.find(el => el[idField] === id)
+    if (data) {
+      res.unshift(data[infoField])
+      if (data[parentIdFiled]) {
+        res.unshift(...getTreeInfoById(data[parentIdFiled], infoField))
+      }
+    }
+    return res
+  }
+
+  return {
+    getTreeInfoById
+  }
+}
+```
+
+## 完整代码
+
+```js
+function createTreeFns(array = [], idField = 'id', parentIdFiled = 'parentId') {
+  function toTreeV1(parentId) {
+    const res = []
+    array.forEach(el => {
+      if (el[parentIdFiled] === parentId) {
+        el.children = toTreeV1(el[idField])
+        res.push(el)
+      }
+    })
+    return res
+  }
+
+  function toTreeV2(parentId) {
+    return array
+      .filter(el => el[parentIdFiled] === parentId)
+      .map(el => ({ ...el, children: toTreeV2(el[idField]) }))
+  }
+
+  function toTreeHasLayer(parentId) {
+    let layerNum = 0
+    function arrayToTree(parentId, layer) {
+      const res = []
+      array.forEach(el => {
+        if (el[parentIdFiled] === parentId) {
+          el.layer = layer
+          el.children = arrayToTree(el[idField], layer + 1)
+          if (el.children.length) {
+            layerNum++
+          }
+          res.push(el)
+        }
+      })
+      return res
+    }
+    return {
+      arr: arrayToTree(parentId, 1),
+      layerNum
+    }
+  }
+
+  function getTreeInfoById(id, infoField) {
+    let res = []
+    let data = array.find(el => el[idField] === id)
+    if (data) {
+      res.unshift(data[infoField])
+      if (data[parentIdFiled]) {
+        res.unshift(...getTreeInfoById(data[parentIdFiled], infoField))
+      }
+    }
+    return res
+  }
+
+  return {
+    toTreeV1,
+    toTreeV2,
+    toTreeHasLayer,
+    getTreeInfoById
+  }
+}
+
+let arr = [
+  { id: 1, parentId: 0, name: '广东省' },
+  { id: 2, parentId: 1, name: '广州市' },
+  { id: 3, parentId: 1, name: '深圳市' },
+  { id: 4, parentId: 2, name: '荔湾区' },
+  { id: 5, parentId: 2, name: '越秀区' },
+  { id: 6, parentId: 3, name: '南山区' },
+  { id: 7, parentId: 3, name: '宝安区' }
+]
+
+const { toTreeV1, toTreeV2, toTreeHasLayer, getTreeInfoById } =
+  createTreeFns(arr)
+
+// let treeData = toTreeV1(0)
+// let treeData = toTreeV2(0)
+let treeData = toTreeHasLayer(0)
+console.log(JSON.stringify(treeData, null, 2))
+
+console.log(getTreeInfoById(4, 'name'))
+```

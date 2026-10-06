@@ -1,0 +1,58 @@
+@import 'tailwindcss';
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Example brand color overrides for the custom theme scaffold. */
+/* For more CSS variables, see https://rspress.rs/ui/vars. */
+:root {
+  --rp-c-brand: #0095ff; /* hsl(205deg 100% 50%) */
+  --rp-c-brand-dark: #0086e6; /* hsl(205deg 100% 45%) */
+  --rp-c-brand-darker: #0077cc; /* hsl(205deg 100% 40%) */
+  --rp-c-brand-light: #33aaff; /* hsl(205deg 100% 60%) */
+  --rp-c-brand-lighter: #66bfff; /* hsl(205deg 100% 70%) */
+  --rp-c-brand-tint: rgba(0, 149, 255, 0.15);
+  --rp-c-bg: #f6f9fb;
+  --card: #ffffff;
+  --mimicry-highlight: #ffffff;
+  --mimicry-darkness: #d0d3d5;
+}
+
+.dark {
+  --rp-c-bg: #121212;
+  --card: #242424;
+  --mimicry-highlight: #1f1f1f;
+  --mimicry-darkness: #000000;
+}
+
+@theme inline {
+  --color-primary: var(--rp-c-brand);
+  --color-card: var(--card);
+}
+
+@utility fc {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@utility convex {
+  background-color: var(--rp-c-bg);
+  box-shadow:
+    -3px -3px 9px var(--mimicry-highlight),
+    3px 3px 9px var(--mimicry-darkness),
+    inset 0 0 0 var(--mimicry-highlight),
+    inset 0 0 0 var(--mimicry-darkness);
+}
+
+@utility concave {
+  background-color: var(--rp-c-bg);
+  box-shadow:
+    0 0 0 var(--mimicry-highlight),
+    0 0 0 var(--mimicry-darkness),
+    inset -3px -3px 9px var(--mimicry-highlight),
+    inset 3px 3px 9px var(--mimicry-darkness);
+}
+
+.rspress-doc img {
+  display: block;
+  margin: 0 auto;
+}

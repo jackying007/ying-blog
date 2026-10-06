@@ -1,0 +1,36 @@
+{
+  "name": "ying-blog",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "rspress build",
+    "dev": "rspress dev",
+    "lint": "rslint",
+    "preview": "rspress preview"
+  },
+  "packageManager": "pnpm@10.33.4",
+  "dependencies": {
+    "@iconify/react": "^6.0.2",
+    "@rspress/core": "^2.0.18",
+    "clsx": "^2.1.1",
+    "dayjs": "^1.11.23",
+    "motion": "^13.1.1",
+    "react-use": "^17.6.1",
+    "tailwind-merge": "^3.6.0",
+    "typed.js": "^3.0.0"
+  },
+  "devDependencies": {
+    "@rsbuild/plugin-tailwindcss": "^2.0.3",
+    "@rslint/core": "^0.5.3",
+    "@types/node": "^22.8.1",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "rspress-plugin-file-tree": "^1.0.5",
+    "rspress-plugin-gh-pages": "^1.0.0",
+    "rspress-plugin-reading-time": "^1.0.1",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^6.0.3"
+  }
+}

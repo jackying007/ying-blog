@@ -1,0 +1,25 @@
+[
+  "nodejs-framework",
+  "asynchronous-io",
+  "event-driven",
+  "single-threaded",
+  "global-object-and-process",
+  "child-process",
+  "path",
+  "buffer",
+  {
+    "type": "dir",
+    "name": "fs",
+    "label": "fs模块"
+  },
+  {
+    "type": "dir",
+    "name": "stream",
+    "label": "stream模块"
+  },
+  {
+    "type": "dir",
+    "name": "net",
+    "label": "net模块"
+  }
+]
